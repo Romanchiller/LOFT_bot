@@ -1,0 +1,14 @@
+certifi==2024.8.30
+charset-normalizer==3.4.0
+holidays==0.60
+idna==3.10
+psycopg2==2.9.10
+pyTelegramBotAPI==4.24.0
+python-dateutil==2.9.0.post0
+python-dotenv==1.0.1
+requests==2.32.3
+six==1.16.0
+SQLAlchemy==2.0.36
+telebot==0.0.5
+typing_extensions==4.12.2
+urllib3==2.2.3
