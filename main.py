@@ -35,9 +35,7 @@ def start(message):
     key_booking = types.InlineKeyboardButton(text='Забронировать стол', callback_data='booking')
     keyboard.row(key_booking)
     key_booking_small_vip = types.InlineKeyboardButton(text='Малую VIPку (5к)', callback_data='booking_small_vip')
-    # keyboard.add(key_booking_small_vip,)
     key_booking_big_vip = types.InlineKeyboardButton(text='Большую VIPку  (7к)', callback_data='booking_big_vip')
-    # keyboard.add(key_booking_big_vip)
     keyboard.row(key_booking_small_vip, key_booking_big_vip)
     bot.send_message(message.chat.id, 'Выберите что хотите забронировать', reply_markup=keyboard)
 
@@ -102,27 +100,29 @@ def get_date(message):
                 bot.register_next_step_handler(message, get_date)
             else:
                 time_for_booking = time_open_close(date_booking)
-                print(time_for_booking[1], type(time_for_booking[1]))
                 booking_data['время открытия'] = time_for_booking[0]
                 booking_data['время закрытия'] = time_for_booking[1]
-                if booking_data['комнаты'] == ['vip_1', 'vip_2'] or booking_data['комнаты'] == ['big_vip']:
-                    booking_data['время закрытия'] = time_for_booking[1] - timedelta(hours=3)
-                booking_data['строка с датой'] = data
 
                 free_table = get_free_table(booking_date= date_booking.strftime("%m.%d.%Y"),
                                             time_close=booking_data['время закрытия'],
                                             room_list=booking_data['комнаты'],
                                             session=session,
                                             guests_quantity=booking_data['количество гостей'])
-                print(free_table)
 
                 booking_data['комментарий'] = ''
                 booking_data['дата бронирования'] = date_booking
+                booking_data['строка с датой'] = date_booking.strftime("%d.%m.%Y")
+                if booking_data['комнаты'] == ['vip_1', 'vip_2'] or booking_data == ['big_vip']:
+                    result = datetime(year=booking_data['дата бронирования'].year,
+                                      month=booking_data['дата бронирования'].month,
+                                      day=booking_data['дата бронирования'].day,
+                                      hour=booking_data['время закрытия'].hour,
+                                      minute=booking_data['время закрытия'].minute) - timedelta(hours=2)
+                    time_constraint = result.time()
+                    booking_data['время закрытия'] = time_constraint
                 if isinstance(free_table, tuple):
                     booking_data['частично забронированный'] = free_table[1][0]
-                    print(booking_data['частично забронированный'])
                     booking_data['ограничение по времени'] = free_table[1][1]
-                    print(booking_data['ограничение по времени'])
                     booking_data['комментарий'] += f'ограничение по времени {free_table[1][1].strftime("%H.%M")}'
                     bot.send_message(message.from_user.id, f'К сожалению на эту дату свободных столов нет. Но есть столы, забронированные на {booking_data["ограничение по времени"].strftime("%H.%M")}.При таком бронировании вам необходимо будет освободить стол до указанного времени. Хотите забронировать стол? Для подтверждения введите "Да". Для отмены введите "Нет". Для выхода в меню введите /start')
                     bot.register_next_step_handler(message, get_answer)
@@ -130,7 +130,7 @@ def get_date(message):
                     bot.send_message(message.from_user.id, f'К сожалению на эту дату свободных столов нет. Вы можете связаться с нами по телефону +7 (950) 529-22-09. Для выхода в меню введите /start')
                 if isinstance(free_table, int) and free_table > 0:
                     booking_data['номер стола'] = free_table
-                    bot.send_message(message.from_user.id, f'Введите время в формате ЧЧ:ММ, на эту дату возможно бронирование с {time_for_booking[0].strftime("%H:%M")} до {booking_data["время закрытия"].strftime("%H:%M")}. Для выхода в меню введите /start');
+                    bot.send_message(message.from_user.id, f'Введите время в формате ЧЧ:ММ. Для выхода в меню введите /start');
                     bot.register_next_step_handler(message, get_time)
         except ValueError:
             bot.send_message(message.from_user.id, 'Неверный формат даты.\n Попробуйте ещё раз.\n  Образец: 12.12.2024.Для выхода в меню введите /start')
@@ -158,15 +158,9 @@ def get_time(message):
         try:
             time_booking = datetime.strptime(data, '%H:%M').time()
             time_constraint = booking_data.get('ограничение по времени')
-            if booking_data['комнаты'] == ['vip_1', 'vip_2'] or booking_data == ['big_vip']:
-                time_constraint = datetime.time(22, 0)
-            if time_constraint is not None:
-                print(time_constraint, type(time_constraint))
-                print(booking_data['время открытия'], type(booking_data['время открытия']))
-                print(booking_data['время закрытия'], type(booking_data['время закрытия']))
-                booking_data['время закрытия'] = time_constraint
 
-                print(time_in_range(booking_data['время открытия'], booking_data['время закрытия'], time_booking))
+            if time_constraint is not None:
+                booking_data['время закрытия'] = time_constraint
 
             if not time_in_range(booking_data['время открытия'], booking_data['время закрытия'], time_booking):
                 bot.send_message(message.from_user.id, f'На эту дату возможно бронирование с {booking_data["время открытия"].strftime("%H:%M")} до {booking_data["время закрытия"].strftime("%H:%M")}.Попробуйте ещё раз. Для выхода в меню введите /start')
@@ -174,7 +168,6 @@ def get_time(message):
             else:
                 booking_data['строка с временем'] = data
                 booking_data['время бронирования'] = str(time_booking)
-                print(booking_data['время бронирования'])
                 bot.send_message(message.from_user.id, 'Введите номер телефона?');
                 bot.register_next_step_handler(message, get_phone)
         except ValueError:
@@ -218,7 +211,6 @@ def get_comments(message):
             'телефон': booking_data['телефон'],
             'комментарий': booking_data['комментарий'],}
 
-        print(info)
         bot.send_message(message.from_user.id, f'Ваше бронирование принято! Данные бронирования: \n {info}.\n Мы свяжемся с вами для подтверждения брони по указанному номеру либо в telegram. Неподтвержденная бронь будет снята за час до начала. Подтвержденная бронь будет снята, если вы не пришли в течение 15 минут на момент начала бронирования . Для отмены бронирования свяжитесь с нами по телефону  +7 (950) 529-22-09 в часы работы')
         with session:
             booking = Booking(date=booking_data['дата бронирования'],
@@ -234,8 +226,10 @@ def get_comments(message):
 
 
 while True:
+    # bot.polling(none_stop=True)
     try:
         bot.polling(none_stop=True)
     except Exception as _ex:
         print(_ex)
+        print(15)
         sleep(1)

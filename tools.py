@@ -24,3 +24,11 @@ def time_in_range(start, end, x):
         return start <= x <= end
     else:
         return start <= x or x <= end
+
+
+# x = time_open_close(datetime.datetime.now())
+# print(x)
+#
+# y = datetime.datetime(year=2025, month=6, day=13, hour=x[1].hour, minute=x[1].minute) - datetime.timedelta(hours=3)
+#
+# print(y.time())

@@ -31,12 +31,9 @@ def get_free_table(booking_date, time_close, room_list, session, guests_quantity
     with session:
         query = select(Table.number).where(Table.capacity >= guests_quantity).filter(Table.room_name.in_(room_list)).order_by(Table.number)
         tables = session.execute(query).scalars().all()
-        print("столы по вместимости")
-        print(tables)
         query = select(Table.number).join(Booking).filter(Booking.date == booking_date, Table.number.in_(tables)).order_by(Table.number).distinct()
         busy_tables = session.execute(query).scalars().all()
-        print("занятые столы")
-        print(busy_tables)
+
         if room_list == ['vip_1', 'vip_2'] and tables == busy_tables or room_list == ['big_vip'] and tables == busy_tables:
             return False
         if room_list == ['small_hall', 'big_hall'] and tables == busy_tables:
@@ -52,8 +49,6 @@ def get_free_table(booking_date, time_close, room_list, session, guests_quantity
                 return False
         else:
             free_tables = sorted(list(set(tables) - set(busy_tables)))
-            print(free_tables)
-            print(free_tables[0])
             return free_tables[0]
 
 
