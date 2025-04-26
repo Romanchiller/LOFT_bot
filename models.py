@@ -39,6 +39,7 @@ class Booking(Base):
     comments: Mapped[str] = mapped_column(String(500), nullable=True)
     date_of_create: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    guests_quantity: Mapped[int] = mapped_column(Integer, nullable=True, default=1)
 
     table = relationship('Table', back_populates='bookings')
 
@@ -46,13 +47,15 @@ class Booking(Base):
     def dict(self):
         return {
             'id': self.id,
+            'количество гостей': self.guests_quantity,
             'дата создания': self.date_of_create,
             'дата бронирования': self.date,
             'время бронирования': self.time,
             'имя': self.user_name,
             'телефон': self.phone,
             'номер стола': self.table_number,
-            'комментарии': self.comments
+            'комментарии': self.comments,
+            'статус': self.is_active
         }
 
 class Table(Base):
