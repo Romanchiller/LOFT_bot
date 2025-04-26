@@ -182,6 +182,7 @@ def change_item(message, booking, parameter):
                 update_booking = update(Booking).where(Booking.id == booking.id).values(**change_dict)
                 session.execute(update_booking)
                 session.commit()
+                bot.send_message(message.from_user.id, f'Параметр бронирования {change_dict.keys()} изменен на {change_dict.values()}')
 
 
 def see_booking_on_date(message):
@@ -423,11 +424,17 @@ def get_comments(message):
             session.commit()
         start(message)
 
+def main():
+    while True:
+        # bot.polling(none_stop=True)
+        try:
+            bot.polling(none_stop=True)
+        except Exception as _ex:
+            with open('log.txt', 'a') as file:
+                file.write(f'{datetime.now()}: {_ex}\n')
+            # print(_ex)
+            sleep(1)
+            continue
 
-while True:
-    # bot.polling(none_stop=True)
-    try:
-        bot.polling(none_stop=True)
-    except Exception as _ex:
-        # print(_ex)
-        sleep(1)
+if __name__ == '__main__':
+    main()
