@@ -1,6 +1,6 @@
 import datetime
 import os
-from sqlalchemy import create_engine, DateTime, Column, Boolean, String, func, Date, ForeignKey, Time, Integer
+from sqlalchemy import create_engine, DateTime, Column, Boolean, String, func, Date, ForeignKey, Time, Integer, BigInteger
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Mapped, mapped_column
@@ -34,7 +34,7 @@ class Booking(Base):
     date: Mapped[datetime.date] = mapped_column(Date, nullable=False)
     time: Mapped[datetime.time] = mapped_column(Time, nullable=False, )
     user_name: Mapped[str] = mapped_column(String(100), nullable=False)
-    phone: Mapped[int] = mapped_column(Integer, nullable=False)
+    phone: Mapped[int] = mapped_column(BigInteger, nullable=False)
     table_number: Mapped[int] = mapped_column(Integer, ForeignKey('table.number'), nullable=False)
     comments: Mapped[str] = mapped_column(String(500), nullable=True)
     date_of_create: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
