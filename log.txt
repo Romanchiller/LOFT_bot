@@ -1,7 +1,0 @@
-2025-05-02 17:12:59.341735: HTTPSConnectionPool(host='api.telegram.org', port=443): Read timed out. (read timeout=25)
-2025-05-02 17:14:59.632597: (psycopg2.errors.NumericValueOutOfRange) integer out of range
-
-[SQL: INSERT INTO booking (date, time, user_name, phone, table_number, comments, is_active, guests_quantity) VALUES (%(date)s, %(time)s, %(user_name)s, %(phone)s, %(table_number)s, %(comments)s, %(is_active)s, %(guests_quantity)s) RETURNING booking.id, booking.date_of_create]
-[parameters: {'date': datetime.date(2025, 5, 3), 'time': '18:00', 'user_name': 'dsdf', 'phone': 89872034311, 'table_number': 4, 'comments': 'w', 'is_active': False, 'guests_quantity': 3}]
-(Background on this error at: https://sqlalche.me/e/20/9h9h)
-2025-05-02 17:18:55.617722: name 'desc' is not defined
