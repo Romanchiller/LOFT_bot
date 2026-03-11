@@ -1,5 +1,5 @@
-from sqlalchemy import select
-from models import Base, Room, Table, Booking
+
+from models import Room, Table
 from models import Session
 
 room_1 = Room(name='big_hall', )
@@ -33,17 +33,13 @@ rooms = [room_1, room_2, room_3, room_4, room_5]
 tables = [table_1, table_2, table_3, table_4, table_5, table_6, table_7, table_8, table_9, table_10, table_11, table_12, table_13, table_14, table_15, table_16, table_17, table_18]
 
 session = Session()
+def create_loft(session, rooms, tables):
+    with session:
+        session.add_all(rooms)
 
-with session:
-    session.add_all(rooms)
-    session.add_all(tables)
-    # session.add(user_1)
-    # session.add(booking_1)
-    #
-    # user = session.execute(select(Table))
-    # objects = user.scalars().all()
-    # print(objects)
+        session.add_all(tables)
+        session.commit()
+    return
 
-    session.commit()
 
-# session.close()
+create_loft(session, rooms, tables)

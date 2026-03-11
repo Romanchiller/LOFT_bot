@@ -1,7 +1,9 @@
 import os
 
+import sqlalchemy.exc
 from sqlalchemy import select, update, delete
 
+from create_loft import create_loft, rooms, tables
 from models import Booking, engine
 import telebot
 from dotenv import load_dotenv
@@ -425,16 +427,20 @@ def get_comments(message):
         start(message)
 
 def main():
+    try:
+        create_loft(session, rooms, tables)
+    except sqlalchemy.exc.IntegrityError:
+        pass
     while True:
-        # bot.polling(none_stop=True)
-        try:
-            bot.polling(none_stop=True)
-        except Exception as _ex:
-            with open('log.txt', 'a') as file:
-                file.write(f'{datetime.now()}: {_ex}\n')
-            # print(_ex)
-            sleep(1)
-            continue
+        bot.polling(none_stop=True)
+        # try:
+        #     bot.polling(none_stop=True)
+        # except Exception as _ex:
+        #     with open('log.txt', 'a') as file:
+        #         file.write(f'{datetime.now()}: {_ex}\n')
+        #     print(_ex)
+        #     sleep(1)
+        #     continue
 
 if __name__ == '__main__':
     main()

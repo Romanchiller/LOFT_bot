@@ -1,0 +1,44 @@
+version: "3.9"
+
+volumes:
+  pgdbdata:
+
+services:
+  pgdb:
+
+    image: postgres
+    env_file:
+      .env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "5432:5432"
+    container_name: pgdb
+    volumes:
+      - .:/docker-entrypoint-initdb.d
+      - pgdbdata:/var/lib/postgresql/data/
+
+  bot:
+    container_name: bot
+    build: .
+    command: python3 main.py
+
+    env_file:
+      .env
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - BOT_TOKEN=${BOT_TOKEN}
+    restart: always
+    depends_on:
+      - pgdb
+
+
+
+
+

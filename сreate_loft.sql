@@ -1,0 +1,28 @@
+--CREATE TABLE[IF NOT EXISTS] Room
+--
+--INSERT INTO Room(name) VALUES
+--(big_hall),
+--(small_hall),
+--(vip_1),
+--(vip_2),
+--(big_vip);
+--
+--INSERT INTO Table(number, capacity, room_name) VALUES
+--(1, 2, 'big_hall'),
+--(2, 2, 'big_hall'),
+--(3, 2, 'big_hall'),
+--(4, 4, 'big_hall'),
+--(5, 4, 'big_hall'),
+--(6, 7, 'vip_1'),
+--(7, 7, 'vip_2'),
+--(8, 7, 'big_hall'),
+--(9, 7, 'big_hall'),
+--(10, 4, 'big_hall'),
+--(11, 4, 'big_hall'),
+--(12, 9, 'big_vip'),
+--(13, 3, 'small_hall'),
+--(14, 3, 'small_hall'),
+--(15, 3, 'small_hall'),
+--(16, 4, 'small_hall'),
+--(17, 6, 'small_hall'),
+--(18, 6, 'small_hall'),

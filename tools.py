@@ -1,7 +1,7 @@
 import holidays
 import datetime
 
-from sqlalchemy import select
+from sqlalchemy import select, desc
 
 from models import Table, Booking
 
