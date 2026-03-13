@@ -19,6 +19,8 @@ services:
     volumes:
       - .:/docker-entrypoint-initdb.d
       - pgdbdata:/var/lib/postgresql/data/
+    networks:
+      - bot-network
 
   bot:
     container_name: bot
@@ -29,14 +31,20 @@ services:
       .env
     environment:
       - DB_NAME=${DB_NAME}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
+      - DB_HOST=pgdb
+      - DB_PORT=5432
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - BOT_TOKEN=${BOT_TOKEN}
     restart: always
     depends_on:
       - pgdb
+    networks:
+      - bot-network
+
+networks:
+  bot-network:
+    driver: bridge
 
 
 

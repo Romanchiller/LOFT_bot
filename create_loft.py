@@ -35,10 +35,15 @@ tables = [table_1, table_2, table_3, table_4, table_5, table_6, table_7, table_8
 session = Session()
 def create_loft(session, rooms, tables):
     with session:
-        session.add_all(rooms)
-
-        session.add_all(tables)
-        session.commit()
+        # Проверяем, существуют ли уже комнаты
+        existing_rooms = session.query(Room).count()
+        if existing_rooms == 0:
+            session.add_all(rooms)
+            session.add_all(tables)
+            session.commit()
+            print("Комнаты и столы успешно созданы")
+        else:
+            print("Комнаты уже существуют, пропускаем создание")
     return
 
 
